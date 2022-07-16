@@ -1,71 +1,71 @@
 version: "3"
 services:
-  nginx-proxy:
+  nginx-proxy-test:
     image: jwilder/nginx-proxy
-    container_name: proxy
+    container_name: proxy-test
     ports:
       - 80:80
       - 443:443
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
       - /etc/nginx/vhost.d
-      - /home/wando/ngazi/certs:/etc/nginx/certs:ro
+      - /home/wando/test/ngazi/certs:/etc/nginx/certs:ro
       - /usr/share/nginx/html
     networks:
-      - proxy_net
+      - test_proxy_net
     labels:
       - com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy
-  letsencrypt:
+  letsencrypt-test:
     image: jrcs/letsencrypt-nginx-proxy-companion
-    container_name: encrypt
+    container_name: encrypt-test
     depends_on:
-      - nginx-proxy
+      - nginx-proxy-test
     volumes:
-      - /home/wando/ngazi/certs:/etc/nginx/certs:rw
+      - /home/wando/test/ngazi/certs:/etc/nginx/certs:rw
       - /var/run/docker.sock:/var/run/docker.sock:ro
     volumes_from:
-      - nginx-proxy
+      - nginx-proxy-test
     networks:
-      - proxy_net
-  certs:
+      - test_proxy_net
+  certs-test:
     image: tutum/apache-php
-    container_name: certs
+    container_name: certs-test
     environment:
-      - VIRTUAL_HOST=designsos.org,www.designsos.org,api.designsos.org
-      - LETSENCRYPT_HOST=designsos.org,www.designsos.org,api.designsos.org
+      - VIRTUAL_HOST=test.designsos.org, www.test.designsos.org,test.api.designsos.org
+      - LETSENCRYPT_HOST=test.designsos.org, www.test.designsos.org,test.api.designsos.org
       - LETSENCRYPT_EMAIL=hillarywando@gmail.com
     networks:
-      - cert_net
-  ngazi-server:
-    image: wandonium/ngazi-server:latest
+      - test_cert_net
+  ngazi-server-test:
+    image: wandonium/ngazi-server:test
     container_name: ngazi-server-${ENV}
     restart: unless-stopped
     depends_on:
-      - nginx-proxy
-      - letsencrypt
+      - nginx-proxy-test
+      - letsencrypt-test
     env_file:
       - ./server/config/${ENV}.env
     environment:
-      - VIRTUAL_HOST=api.designsos.org
+      - VIRTUAL_HOST=test.api.designsos.org
     networks:
-      - proxy_net
+      - test_proxy_net
     volumes:
       - ./server/tv_app_apks:/usr/src/app/tv_app_apks
       - ./server/logs:/usr/src/app/logs
-  ngazi-client:
-    image: wandonium/ngazi-client:latest
+  ngazi-client-test:
+    image: wandonium/ngazi-client:test
     container_name: ngazi-client-${ENV}
     restart: unless-stopped
     depends_on:
-      - ngazi-server
-      - nginx-proxy
-      - letsencrypt
+      - ngazi-server-test
+      - nginx-proxy-test
+      - letsencrypt-test
     environment:
-      - VIRTUAL_HOST=designsos.org,www.designsos.org
+      - VIRTUAL_HOST=test.designsos.org,www.test.designsos.org
     networks:
-      - proxy_net
+      - test_proxy_net
 networks:
-  cert_net:
+  test_cert_net:
     driver: bridge
-  proxy_net:
+  test_proxy_net:
     driver: bridge
