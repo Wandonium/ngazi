@@ -1,0 +1,29 @@
+version: "3"
+services:
+  ngazi-server:
+    image: ngazi-server:${ENV}
+    container_name: ngazi-server-${ENV}
+    restart: unless-stopped
+    env_file:
+      - ./server/config/${ENV}.env
+    ports:
+      - "5000:5000"
+    networks:
+      - ngazi-net
+    volumes:
+      - ./server/tv_app_apks:/usr/src/app/tv_app_apks
+      - ./server/logs:/usr/src/app/logs
+  ngazi-client:
+    image: ngazi-client:${ENV}
+    container_name: ngazi-client-${ENV}
+    restart: unless-stopped
+    depends_on:
+      - ngazi-server
+    ports:
+      - "81:81"
+      - "443:443"
+    networks:
+      - ngazi-net
+networks:
+  ngazi-net:
+    driver: bridge

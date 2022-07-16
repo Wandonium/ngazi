@@ -1,0 +1,6 @@
+http://ngazi.media/
+http://ngazi.media/hotspot/login
+http://ngazi.media/data
+http://ngazi.media/music_video/create
+http://ngazi.media/playlist/create
+http://ngazi.media/advert/create

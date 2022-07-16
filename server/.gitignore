@@ -1,0 +1,8 @@
+node_modules
+config
+image_uploads
+tv_app_apks
+logs
+.env
+package-lock.json
+yarn.lock

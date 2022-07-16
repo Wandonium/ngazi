@@ -1,0 +1,71 @@
+version: "3"
+services:
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    container_name: proxy
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - /etc/nginx/vhost.d
+      - /home/wando/ngazi/certs:/etc/nginx/certs:ro
+      - /usr/share/nginx/html
+    networks:
+      - proxy_net
+    labels:
+      - com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy
+  letsencrypt:
+    image: jrcs/letsencrypt-nginx-proxy-companion
+    container_name: encrypt
+    depends_on:
+      - nginx-proxy
+    volumes:
+      - /home/wando/ngazi/certs:/etc/nginx/certs:rw
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    volumes_from:
+      - nginx-proxy
+    networks:
+      - proxy_net
+  certs:
+    image: tutum/apache-php
+    container_name: certs
+    environment:
+      - VIRTUAL_HOST=designsos.org,www.designsos.org,api.designsos.org
+      - LETSENCRYPT_HOST=designsos.org,www.designsos.org,api.designsos.org
+      - LETSENCRYPT_EMAIL=hillarywando@gmail.com
+    networks:
+      - cert_net
+  ngazi-server:
+    image: wandonium/ngazi-server:latest
+    container_name: ngazi-server-${ENV}
+    restart: unless-stopped
+    depends_on:
+      - nginx-proxy
+      - letsencrypt
+    env_file:
+      - ./server/config/${ENV}.env
+    environment:
+      - VIRTUAL_HOST=api.designsos.org
+    networks:
+      - proxy_net
+    volumes:
+      - ./server/tv_app_apks:/usr/src/app/tv_app_apks
+      - ./server/logs:/usr/src/app/logs
+  ngazi-client:
+    image: wandonium/ngazi-client:latest
+    container_name: ngazi-client-${ENV}
+    restart: unless-stopped
+    depends_on:
+      - ngazi-server
+      - nginx-proxy
+      - letsencrypt
+    environment:
+      - VIRTUAL_HOST=designsos.org,www.designsos.org
+    networks:
+      - proxy_net
+networks:
+  cert_net:
+    driver: bridge
+  proxy_net:
+    driver: bridge

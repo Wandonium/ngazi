@@ -1,0 +1,33 @@
+version: "3"
+services:
+  ngazi-server:
+    image: ngazi-server
+    container_name: ngazi-server
+    build: ./server/
+    stdin_open: true
+    ports:
+      - "5000:5000"
+    networks:
+      - ngazi-net
+    volumes:
+      - ./server/tv_app_apks:/usr/src/app/tv_app_apks
+      - ./server/logs:/usr/src/app/logs
+      - ./server/:/usr/src/app
+      - /usr/src/app/node_modules
+  ngazi-client:
+    image: ngazi-client
+    container_name: ngazi-client
+    depends_on:
+      - ngazi-server
+    build: ./client/
+    stdin_open: true
+    ports:
+      - "3000:3000"
+    networks:
+      - ngazi-net
+    volumes:
+      - ./client/:/usr/src/app
+      - /usr/src/app/node_modules
+networks:
+  ngazi-net:
+    driver: bridge

@@ -1,0 +1,15 @@
+- curl for getting video upload url => curl -X POST \
+ -H 'Authorization: Bearer GUYp5CBEAE7VXDiiu_unsxdfGNKDhRmXrEOJcgMO' \
+https://api.cloudflare.com/client/v4/accounts/759fbd3a04f9c1f4d47d21aac64731bb/stream/direct_upload \
+ --data '{
+    "maxDurationSeconds": 3600,
+    "expiry": "2020-04-06T02:20:00Z",
+    "requireSignedURLs": true,
+    "allowedOrigins": ["example.com"],
+    "thumbnailTimestampPct": 0.568427,
+    "watermark": {
+        "uid": "08d91fdffc4db871f7cf5fc91990bc3d"
+    }
+ }'
+
+- curl for setting the webhook url => curl -X PUT --header 'Authorization: Bearer GUYp5CBEAE7VXDiiu_unsxdfGNKDhRmXrEOJcgMO' https://api.cloudflare.com/client/v4/accounts/759fbd3a04f9c1f4d47d21aac64731bb/stream/webhook --data '{"notificationUrl":"https://b9e6-41-90-68-82.ngrok.io/api/v1/notifications"}'
