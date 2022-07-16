@@ -6,7 +6,7 @@ services:
     build: ./server/
     stdin_open: true
     ports:
-      - "5000:5000"
+      - "8000:8000"
     networks:
       - ngazi-net
     volumes:
