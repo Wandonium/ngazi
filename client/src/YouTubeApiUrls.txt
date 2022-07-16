@@ -1,5 +1,0 @@
-- playlists => https://youtube.googleapis.com/youtube/v3/playlists?key=AIzaSyC72cAydW5vgr2DOpR3CKwbH-FOEIKQ2U4&channelId=UCEne1K4845juha_oZloYHtg&part=snippet
-- playlists items => https://www.googleapis.com/youtube/v3/playlistItems?key=AIzaSyC72cAydW5vgr2DOpR3CKwbH-FOEIKQ2U4&playlistId=PLhRU-z2vbao3UAoaiuOv2Z2dF_2ZJ20y5&part=snippet
-
-Get the video ID for below from the stats for nerds blub when you right click on youtube video.
-- video => https://www.googleapis.com/youtube/v3/videos?key=AIzaSyC72cAydW5vgr2DOpR3CKwbH-FOEIKQ2U4&id=8nVGbgPHLIk&part=snippet
