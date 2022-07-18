@@ -13,9 +13,6 @@ services:
     image: wandonium/ngazi-server:test
     container_name: ngazi-server-${ENV}
     restart: unless-stopped
-    depends_on:
-      - nginx-proxy
-      - letsencrypt
     env_file:
       - ./server/config/${ENV}.env
     environment:
@@ -31,8 +28,6 @@ services:
     restart: unless-stopped
     depends_on:
       - ngazi-server-test
-      - nginx-proxy
-      - letsencrypt
     environment:
       - VIRTUAL_HOST=test.designsos.org,www.test.designsos.org
     networks:
