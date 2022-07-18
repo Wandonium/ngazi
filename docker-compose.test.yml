@@ -1,14 +1,5 @@
 version: "3"
 services:
-  certs-test:
-    image: tutum/apache-php
-    container_name: certs-test
-    environment:
-      - VIRTUAL_HOST=test.designsos.org, www.test.designsos.org,test.api.designsos.org
-      - LETSENCRYPT_HOST=test.designsos.org, www.test.designsos.org,test.api.designsos.org
-      - LETSENCRYPT_EMAIL=hillarywando@gmail.com
-    networks:
-      - test_cert_net
   ngazi-server-test:
     image: wandonium/ngazi-server:test
     container_name: ngazi-server-${ENV}
@@ -33,7 +24,5 @@ services:
     networks:
       - proxy_net
 networks:
-  test_cert_net:
-    driver: bridge
   proxy_net:
     driver: bridge
