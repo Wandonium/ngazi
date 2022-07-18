@@ -31,8 +31,8 @@ services:
     image: tutum/apache-php
     container_name: certs
     environment:
-      - VIRTUAL_HOST=designsos.org,www.designsos.org,api.designsos.org
-      - LETSENCRYPT_HOST=designsos.org,www.designsos.org,api.designsos.org
+      - VIRTUAL_HOST=designsos.org,www.designsos.org,api.designsos.org,test.designsos.org,test.api.designsos.org
+      - LETSENCRYPT_HOST=designsos.org,www.designsos.org,api.designsos.org,test.designsos.org,test.api.designsos.org
       - LETSENCRYPT_EMAIL=hillarywando@gmail.com
     networks:
       - cert_net
