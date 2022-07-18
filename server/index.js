@@ -45,9 +45,9 @@ let values = {
 
 const app = express()
 const MongoClient = mongodb.MongoClient
+dotenv.config()
 const port = process.env.PORT || 8000
 
-dotenv.config()
 app.use(express.json())
 app.use("/image_uploads", express.static("image_uploads"))
 app.use("/tv_app_apks", express.static("tv_app_apks"))
@@ -67,6 +67,7 @@ app.use(passport.session())
 
 MongoClient.connect(process.env.NGAZI_DB_URI, { wtimeoutMS: 2500 })
   .catch((err) => {
+    logger.info(`process.env.NGAZI_DB_URI: ${process.env.NGAZI_DB_URI}`)
     logger.error(err.stack)
     process.exit(1)
   })
@@ -85,7 +86,7 @@ MongoClient.connect(process.env.NGAZI_DB_URI, { wtimeoutMS: 2500 })
     app.listen(port, () => {
       logger.info(`listening on port ${port}`)
     })
-  })
+})
 
 require("./auth/facebook.auth.js")(passport, values, app)
 require("./auth/google.auth.js")(passport, values, app)
