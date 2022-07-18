@@ -7,7 +7,7 @@ services:
     env_file:
       - ./server/config/${ENV}.env
     environment:
-      - VIRTUAL_HOST=test.api.designsos.org
+      - VIRTUAL_HOST=test.api.ngazi.media
     networks:
       - proxy_net
     volumes:
@@ -20,7 +20,7 @@ services:
     depends_on:
       - ngazi-server-test
     environment:
-      - VIRTUAL_HOST=test.designsos.org,www.test.designsos.org
+      - VIRTUAL_HOST=test.ngazi.media,www.test.ngazi.media
     networks:
       - proxy_net
 networks:
