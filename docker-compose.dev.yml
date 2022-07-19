@@ -3,9 +3,8 @@ services:
   ngazi-server:
     image: ngazi-server:${ENV}
     container_name: ngazi-server-${ENV}
-    restart: unless-stopped
     env_file:
-      - ./server/config/${ENV}.env
+      - ./server/.env
     ports:
       - "8000:8000"
     networks:
