@@ -22,7 +22,7 @@ function Playlist(props) {
     useEffect(() => {
         setMsg('Getting music videos to be put into playlist...');
         setLoading(true);
-        fetch(`${props.backendUrl}/api/v1/musicVideos?videosPerPage=100`)
+        fetch(`${props.backendUrl}/api/v1/musicVideos?videosPerPage=200`)
         .then(res => res.json())
         .then(data => {
             console.log('get music videos: ', data);
