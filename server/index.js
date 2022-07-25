@@ -7,6 +7,7 @@ const session = require("express-session")
 const mongodb = require("mongodb")
 const axios = require("axios")
 const cookieParser = require("cookie-parser")
+const GeoIP = require("express-simple-geoip");
 const { DateTime } = require("luxon")
 const logger = require('./util/logger');
 
@@ -53,6 +54,8 @@ app.use("/image_uploads", express.static("image_uploads"))
 app.use("/tv_app_apks", express.static("tv_app_apks"))
 app.use("/logs", express.static("logs"));
 app.use(cors())
+// app.use(GeoIP(`${process.env.GEOIP_API_KEY}`));
+app.use(GeoIP("at_g2LXTLUPsiL0IvKXFL7vXlVEucoTP"));
 // app.use(cookieParser())
 
 app.use(
@@ -94,6 +97,11 @@ require("./auth/twitter.auth.js")(passport, values, app)
 app.get("/", (req, res) => {
   res.send("Successful response.")
 })
+
+app.get("/test", (req, res) => {
+  logger.info(`ip: ${req.ip}}`);
+  res.json({ hello: "world", geoip: req.geoip });
+});
 
 app.get("/api/users", (req, res) => {
   res.json([
