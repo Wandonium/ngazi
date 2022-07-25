@@ -104,8 +104,8 @@ const IpGeolocation = require("simple-geoip");
 app.get("/test", (req, res) => {
   logger.info(`req.ip: ${req.ip}`);
   let ipGeolocationLookup  = new IpGeolocation("at_g2LXTLUPsiL0IvKXFL7vXlVEucoTP");
-  // ipGeolocationLookup.lookup(req.ip, (err, data) => {
-  ipGeolocationLookup.lookup("8.8.8.8", (err, data) => {
+  ipGeolocationLookup.lookup(req.ip, (err, data) => {
+  // ipGeolocationLookup.lookup("8.8.8.8", (err, data) => {
      if (err) throw err;
      console.log(data);
      res.json({ hello: "world", geoip: data });
