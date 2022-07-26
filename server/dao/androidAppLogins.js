@@ -65,7 +65,7 @@ class AndroidAppLogins {
         page = 0,
         loginsPerPage = 20
     } = {}) {
-        let dt = DateTime.now();
+        let dt = DateTime.now().setZone('Africa/Nairobi');
         const offset = dt.offset;
         const from = new Date(dt.set({hour: 0, minutes: 0}).plus({minutes: offset}).toString());
         let to = new Date(dt.plus({minutes: offset}).toString());

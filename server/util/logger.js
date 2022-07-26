@@ -2,12 +2,20 @@ const winston = require('winston');
 require('winston-daily-rotate-file');
 const { combine, timestamp, printf, colorize, json } = winston.format;
 
+
+const timezoned = () => {
+    return new Date().toLocaleString('en-US', {
+        timeZone: 'Africa/Nairobi'
+    });
+}
+
 const options = {
     level: 'debug',
     format: combine(
         colorize({ all: true }),
         timestamp({
-            format: '[on] MM-DD-YYYY [at] HH:mm:ss'
+            // format: '[on] MM-DD-YYYY [at] HH:mm:ss'
+            format: timezoned
         }),
         printf((info) => `[${info.timestamp}] ${info.level}: ${info.message}`)
     ),
@@ -29,7 +37,7 @@ const combinedFileRotateTransport = new winston.transports.DailyRotateFile({
     level: 'info',
     format: combine(
         timestamp({
-            format: '[on] MM-DD-YYYY [at] HH:mm:ss'
+            format: timezoned
         }),
         printf((info) => `[${info.timestamp}] ${info.level}: ${info.message}`)
     )
@@ -42,7 +50,7 @@ const errorFileRotateTransport = new winston.transports.DailyRotateFile({
     format: combine(
         errorFilter(),
         timestamp({
-            format: '[on] MM-DD-YYYY [at] HH:mm'
+            format: timezoned
         }),
         printf((info) => `[${info.timestamp}] ${info.level}: ${info.message}`)
     )
@@ -55,7 +63,7 @@ const infoFileRotateTransport = new winston.transports.DailyRotateFile({
     format: combine(
         infoFilter(),
         timestamp({
-            format: '[on] MM-DD-YYYY [at] HH:mm'
+            format: timezoned
         }),
         printf((info) => `[${info.timestamp}] ${info.level}: ${info.message}`)
     )
