@@ -18,6 +18,7 @@ const tvAppApks = require("./routes/tvAppApks.route.js")
 const simcards = require("./routes/simcards.route.js")
 const musicVideos = require('./routes/musicVideos.route.js')
 const playlist = require('./routes/playlist.route.js');
+const androidAppLogins = require('./routes/androidAppLogin.route.js');
 
 const UsersDAO = require("./dao/users.dao.js")
 const AdViewDAO = require("./dao/adviews.dao.js")
@@ -30,6 +31,7 @@ const DevicesDAO = require("./dao/devices.dao.js")
 const TvAppApksDAO = require("./dao/tvAppApks.dao.js")
 const SimCardsDAO = require("./dao/simcards.dao.js")
 const PlaylistDAO = require("./dao/playlist.dao.js");
+const AndroidAppLogins = require("./dao/androidAppLogins.js");
 
 let values = {
   macAddress: "",
@@ -79,6 +81,7 @@ MongoClient.connect(process.env.NGAZI_DB_URI, { wtimeoutMS: 2500 })
     await TvAppApksDAO.injectDB(client)
     await SimCardsDAO.injectDB(client)
     await PlaylistDAO.injectDB(client)
+    await AndroidAppLogins.injectDB(client)
     app.listen(port, () => {
       logger.info(`listening on port ${port}`)
     })
@@ -115,6 +118,7 @@ app.use("/api/v1/tvAppApks", tvAppApks)
 app.use("/api/v1/simcards", simcards)
 app.use("/api/v1/musicVideos", musicVideos)
 app.use("/api/v1/playlist", playlist)
+app.use("/api/v1/androidAppLogins", androidAppLogins);
 
 
 app.post("/api/hotspot/login",(req, res) => {

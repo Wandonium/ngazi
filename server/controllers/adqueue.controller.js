@@ -48,10 +48,10 @@ class AdQueueController {
         let filters = {deviceId: deviceId};
         try {
             const { advertsList, totalNumAdverts, errors } = await 
-            AdqueueDAO.getAdQueueAdverts({
+            AdQueueDAO.getAdQueueAdverts({
                 filters,
                 page: 0,
-                adsPerPage: 20
+                adsPerPage: 1120
             });
 
             if(isEmptyObject(advertsList)) {
@@ -65,25 +65,24 @@ class AdQueueController {
                     logger.info(`Create new android app login response: ${JSON.stringify(data)}`);
                     let response = {
                         adQueueAdverts: advertsList,
-                        page,
                         filters,
-                        entries_per_page: adsPerPage,
                         total_results: totalNumAdverts,
                         errors
                     }
 
                     res.json(response);
                 }).catch(err => {
-                    logger.error(`Error creating new android app login: ${err}`);
+                    let msg = `Error creating new android app login: ${err}`
+                    logger.error(msg);
                     res.status(500).json({
                         status: 'failure',
-                        error: err
+                        error: msg
                     });
                 })
             }
         } catch(e) {
             logger.error(`Fatal error getting adQueue adverts: ${e}`);
-            res.status(500).json({ error: e });
+            res.status(500).json({ error: e.message });
         }
 
     }

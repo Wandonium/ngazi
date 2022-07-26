@@ -1,7 +1,7 @@
 const mongodb = require('mongodb');
 const ObjectId = mongodb.ObjectId;
 const logger = require('../util/logger');
-const getDate = require('../util/util');
+const { getDate, isNullUndefined } = require('../util/util');
 const { DateTime } = require("luxon");
 
 let logins;
@@ -37,8 +37,12 @@ class AndroidAppLogins {
         page = 0,
         loginsPerPage = 20
     } = {}) {
+        let cursor, query;
+        logger.debug(`deviceId in getAllAndroidAppLogins: ${deviceId}`);
         try {
-            cursor = await logins.find({'device_id': deviceId});
+            query = deviceId === "" ? {} : {'device_id': {$eq: ObjectId(deviceId)}};
+            logger.debug(`query in getAllAndroidAppLogins: ${JSON.stringify(query, null, 2)}`)
+            cursor = await logins.find(query);
         } catch(e) {
             logger.error(`Unable to find androidApp logins in db: ${e}`)
             return { loginsList: [], totalNumLogins: 0 };
@@ -48,7 +52,7 @@ class AndroidAppLogins {
 
         try {
             const loginsList = await displayCursor.toArray();
-            const totalNumLogins = await logins.countDocuments({});
+            const totalNumLogins = await logins.countDocuments(query);
             return { loginsList, totalNumLogins };
         } catch(e) {
             logger.error(`Unable to convert cursor to array or error counting androidApp login documents: ${e}`);
@@ -63,8 +67,8 @@ class AndroidAppLogins {
     } = {}) {
         let dt = DateTime.now();
         const offset = dt.offset;
-        const from = new Date(dt.set({hour: 0}).plus({minutes: offset}).toString());
-        const to = new Date(dt.set({hour: 24}).plus({minutes: offset}).toString());
+        const from = new Date(dt.set({hour: 0, minutes: 0}).plus({minutes: offset}).toString());
+        let to = new Date(dt.plus({minutes: offset}).toString());
 
         logger.debug(`from : ${from}`);
         logger.debug(`to : ${to}`);
@@ -75,7 +79,7 @@ class AndroidAppLogins {
                 {'logged_in_at': {$gte: from, $lte: to}}
             ]
         };
-        logger.debug(`query: ${query}`);
+        logger.debug(`query: ${JSON.stringify(query, null, 2)}`);
 
         let cursor;
         try {
@@ -121,7 +125,7 @@ class AndroidAppLogins {
                 {'logged_in_at': {$gte: from, $lte: to}}
             ]
         };
-        logger.debug(`query: ${query}`);
+        logger.debug(`query: ${JSON.stringify(query, null, 2)}`);
 
         let cursor;
         try {
@@ -158,8 +162,8 @@ class AndroidAppLogins {
             const updateResponse = await logins.updateOne(
                 {_id: ObjectId(updatedLogin._id)},
                 {$set: {
-                    device_id: updatedLogin.device_id,
-                    logged_in_at: updatedLogin.logged_in_at
+                    device_id: ObjectId(updatedLogin.device_id),
+                    logged_in_at: new Date(updatedLogin.logged_in_at)
                 }}
             );
             return updateResponse;

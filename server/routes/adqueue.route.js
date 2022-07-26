@@ -5,6 +5,7 @@ const router = express.Router();
 
 router.route('/').get(AdQueueCtrl.apiGetAdQueue);
 router.route('/id/:id').get(AdQueueCtrl.apiGetAdQueueAdvertById);
+router.route('/deviceId/:deviceId').get(AdQueueCtrl.apiGetAdQueueForAndroidApp);
 router.route('/').put(AdQueueCtrl.apiUpdateAdQueueAdvert);
 router.route('/').delete(AdQueueCtrl.apiDeleteAdQueueAdvert);
 
