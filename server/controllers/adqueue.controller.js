@@ -1,5 +1,6 @@
 const AdQueueDAO = require('../dao/adqueue.dao.js');
-const { isNullUndefined } = require('../util/util.js');
+const AndroidAppLogins = require('../dao/androidAppLogins.js');
+const { isNullUndefined, isEmptyObject } = require('../util/util.js');
 const logger = require('../util/logger');
 
 class AdQueueController {
@@ -39,6 +40,52 @@ class AdQueueController {
             logger.error(`Fatal error getting adQueue adverts: ${e}`);
             res.status(500).json({ error: e });
         }
+    }
+
+    static async apiGetAdQueueForAndroidApp(req, res) {
+        const deviceId = req.params.deviceId || {};
+        logger.debug(`get adqueue for android app device id: ${deviceId}`);
+        let filters = {deviceId: deviceId};
+        try {
+            const { advertsList, totalNumAdverts, errors } = await 
+            AdqueueDAO.getAdQueueAdverts({
+                filters,
+                page: 0,
+                adsPerPage: 20
+            });
+
+            if(isEmptyObject(advertsList)) {
+                let msg = `Fatal error! No Adqueue adverts found for device: ${deviceId}`;
+                logger.error(msg);
+                res.status(500).json({ error: msg});
+            } else {
+                // do logging of app login before returning adqueue list
+                AndroidAppLogins.addAndroidAppLogin(deviceId)
+                .then(data => {
+                    logger.info(`Create new android app login response: ${JSON.stringify(data)}`);
+                    let response = {
+                        adQueueAdverts: advertsList,
+                        page,
+                        filters,
+                        entries_per_page: adsPerPage,
+                        total_results: totalNumAdverts,
+                        errors
+                    }
+
+                    res.json(response);
+                }).catch(err => {
+                    logger.error(`Error creating new android app login: ${err}`);
+                    res.status(500).json({
+                        status: 'failure',
+                        error: err
+                    });
+                })
+            }
+        } catch(e) {
+            logger.error(`Fatal error getting adQueue adverts: ${e}`);
+            res.status(500).json({ error: e });
+        }
+
     }
 
     static async apiGetAdQueueAdvertById(req, res, next) {

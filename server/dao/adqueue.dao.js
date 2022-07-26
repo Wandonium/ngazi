@@ -45,7 +45,7 @@ class AdQueueDAO {
         let query = {};
         let errorList = {};
         if(filters) {
-            // logger.log('filters in adqueue dao: ', filters);
+            logger.log('filters in adqueue dao: ', filters);
             if('ad_id' in filters) {
                 query = {'advert_id': ObjectId(filters['ad_id'])};
             } else if('deviceId' in filters) {
@@ -64,7 +64,7 @@ class AdQueueDAO {
                 }
             }
         }
-        // logger.log('query: ', query);
+        logger.log('query: ', query);
 
         let cursor;
         try {
