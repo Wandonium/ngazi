@@ -1,13 +1,10 @@
 const express = require("express")
-const crypto = require("crypto")
 const cors = require("cors")
 const dotenv = require("dotenv")
 const passport = require("passport")
 const session = require("express-session")
 const mongodb = require("mongodb")
 const axios = require("axios")
-const cookieParser = require("cookie-parser")
-const GeoIP = require("express-simple-geoip");
 const { DateTime } = require("luxon")
 const logger = require('./util/logger');
 
@@ -21,6 +18,7 @@ const tvAppApks = require("./routes/tvAppApks.route.js")
 const simcards = require("./routes/simcards.route.js")
 const musicVideos = require('./routes/musicVideos.route.js')
 const playlist = require('./routes/playlist.route.js');
+const androidAppLogins = require('./routes/androidAppLogin.route.js');
 
 const UsersDAO = require("./dao/users.dao.js")
 const AdViewDAO = require("./dao/adviews.dao.js")
@@ -33,6 +31,7 @@ const DevicesDAO = require("./dao/devices.dao.js")
 const TvAppApksDAO = require("./dao/tvAppApks.dao.js")
 const SimCardsDAO = require("./dao/simcards.dao.js")
 const PlaylistDAO = require("./dao/playlist.dao.js");
+const AndroidAppLogins = require("./dao/androidAppLogins.js");
 
 let values = {
   macAddress: "",
@@ -54,9 +53,6 @@ app.use("/image_uploads", express.static("image_uploads"))
 app.use("/tv_app_apks", express.static("tv_app_apks"))
 app.use("/logs", express.static("logs"));
 app.use(cors())
-// app.use(GeoIP(`${process.env.GEOIP_API_KEY}`));
-app.use(GeoIP("at_g2LXTLUPsiL0IvKXFL7vXlVEucoTP"));
-// app.use(cookieParser())
 
 app.use(
   session({
@@ -86,6 +82,7 @@ MongoClient.connect(process.env.NGAZI_DB_URI, { wtimeoutMS: 2500 })
     await TvAppApksDAO.injectDB(client)
     await SimCardsDAO.injectDB(client)
     await PlaylistDAO.injectDB(client)
+    await AndroidAppLogins.injectDB(client)
     app.listen(port, () => {
       logger.info(`listening on port ${port}`)
     })
@@ -98,19 +95,6 @@ require("./auth/twitter.auth.js")(passport, values, app)
 app.get("/", (req, res) => {
   res.send("Successful response.")
 })
-
-const IpGeolocation = require("simple-geoip"); 
-
-app.get("/test", (req, res) => {
-  logger.info(`req.ip: ${req.ip}`);
-  let ipGeolocationLookup  = new IpGeolocation("at_g2LXTLUPsiL0IvKXFL7vXlVEucoTP");
-  ipGeolocationLookup.lookup(req.ip, (err, data) => {
-  // ipGeolocationLookup.lookup("8.8.8.8", (err, data) => {
-     if (err) throw err;
-     console.log(data);
-     res.json({ hello: "world", geoip: data });
-  });
-});
 
 app.get("/api/users", (req, res) => {
   res.json([
@@ -135,6 +119,7 @@ app.use("/api/v1/tvAppApks", tvAppApks)
 app.use("/api/v1/simcards", simcards)
 app.use("/api/v1/musicVideos", musicVideos)
 app.use("/api/v1/playlist", playlist)
+app.use("/api/v1/androidAppLogins", androidAppLogins);
 
 
 app.post("/api/hotspot/login",(req, res) => {
