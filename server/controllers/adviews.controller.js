@@ -9,16 +9,17 @@ class AdViewsController {
             const adId = req.body.adId;
             const userId = req.body.userId;
             const deviceId = req.body.deviceId;
-            const viewedAt = getDate();
-            // logger.debug("viewedAt: ", viewedAt.toString());
-            logger.debug(`req.body: ${JSON.stringify(req.body, null, 2)}`);
-            logger.debug(`userId: ${userId}`);
+            const adviewType = req.body.type;
+            const viewedAt = new Date(getDate().toString());
+            logger.info(`viewedAt: ${viewedAt}`);
+            logger.info(`req.body: ${JSON.stringify(req.body, null, 2)}`);
 
             const adViewResponse = await AdViewsDAO.addAdView(
                 adId,
                 viewedAt,
                 userId,
-                deviceId
+                deviceId,
+                adviewType
             );
             res.json({status: 'success', postResponse: adViewResponse});
         } catch(e) {
