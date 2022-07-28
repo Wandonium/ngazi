@@ -22,14 +22,16 @@ class AdViewDAO {
         adId,
         viewedAt,
         userId,
-        deviceId
+        deviceId,
+        adviewType
     ) {
         try {
             const adviewDoc = {
                 ad_id: ObjectId(adId),
                 viewed_at: viewedAt,
                 user_id: ObjectId(userId),
-                device_id: ObjectId(deviceId)
+                device_id: ObjectId(deviceId),
+                type: adviewType
             };
             return await adviews.insertOne(adviewDoc);
         } catch(e) {

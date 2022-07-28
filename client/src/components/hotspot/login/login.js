@@ -330,7 +330,8 @@ function Login(props) {
                     body: JSON.stringify({
                       adId: Math.floor(Math.random() * 100000 + 1),
                       userId,
-                      deviceId: Math.floor(Math.random() * 100000 + 1),
+                      deviceId,
+                      type: "WIFI"
                     }),
                   }
                   fetch(backendUrl + "/api/v1/adviews", requestOptions)
